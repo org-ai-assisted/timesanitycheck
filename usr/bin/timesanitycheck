@@ -3,10 +3,6 @@
 ## Copyright (C) 2012 - 2025 ENCRYPTED SUPPORT LLC <adrelanos@whonix.org>
 ## See the file COPYING for copying conditions.
 
-## time_sanity_check_msg_dynamic is assigned three times and read nowhere; see
-## the note in time_sanity_check() for why it is kept rather than deleted.
-# shellcheck disable=SC2034
-
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -41,23 +37,9 @@ time_sanity_check() {
    ## EXPIRATION_UNIXTIME variable gets sourced from /etc/default/$NAME
    EXPIRATION_HUMAN_READABLE_TIME="$(date --utc --date="@${EXPIRATION_UNIXTIME}")"
 
-   ## time_sanity_check_msg_static is used by
-   ## /usr/libexec/helper-scripts/onion-time-pre-script, which runs this script
-   ## and reads its stdout.
-   ##
-   ## time_sanity_check_msg_dynamic is DEAD. The comment here used to say it was
-   ## used by /usr/share/timesanitycheck/start; that file no longer exists --
-   ## usr/share/timesanitycheck/ now holds only date-minimum-file-create and
-   ## minimum_unixtime -- and a grep across every package finds no other reader.
-   ## It is built three times below and consumed nowhere. Flagged rather than
-   ## deleted: whether the richer message should be revived for the popup path
-   ## is a product question, not a strict-mode one. Waived file-wide above,
-   ## because it is assigned at three separate points.
+   ## time_sanity_check_msg_static is used by /usr/libexec/helper-scripts/onion-time-pre-script.
 
    if [ "${BOOT_UNIXTIME}" -lt "${MINIMUM_UNIXTIME}" ]; then
-      time_sanity_check_msg_dynamic="The clock is slow.
-       (Current time '${BOOT_HUMAN_READABLE_TIME}' ('${BOOT_UNIXTIME}') is less than
- the minimum time '${MINIMUM_HUMAN_READABLE_TIME}' ('${MINIMUM_UNIXTIME}').)"
        time_sanity_check_msg_static="The clock is slow.
 (Current time is less than the minimum time '${MINIMUM_HUMAN_READABLE_TIME}'.)"
       time_sanity_check_exit_code=2
@@ -65,16 +47,12 @@ time_sanity_check() {
    fi
 
    if [ "${BOOT_UNIXTIME}" -gt "${EXPIRATION_UNIXTIME}" ]; then
-      time_sanity_check_msg_dynamic="The clock is fast.
-       (Current time '${BOOT_HUMAN_READABLE_TIME}' ('${BOOT_UNIXTIME}') is greater than
- the expiration time '${EXPIRATION_HUMAN_READABLE_TIME}' ('${EXPIRATION_UNIXTIME}').)"
       time_sanity_check_msg_static="The clock is fast.
 Current time is greater than the expiration timestamp '${EXPIRATION_HUMAN_READABLE_TIME}'."
       time_sanity_check_exit_code=3
       return
    fi
 
-   time_sanity_check_msg_dynamic="Current time '${BOOT_HUMAN_READABLE_TIME}' ('${BOOT_UNIXTIME}')."
    time_sanity_check_msg_static="Within minimum time '${MINIMUM_HUMAN_READABLE_TIME}' and expiration timestamp '${EXPIRATION_HUMAN_READABLE_TIME}', ok."
    time_sanity_check_exit_code=0
 }
