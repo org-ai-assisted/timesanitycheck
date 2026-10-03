@@ -8,7 +8,7 @@
   /{,usr/}bin/date rix,
   /{,usr/}bin/cat rix,
 
-  /usr/share/timesanitycheck/minimum_unixtime r,
+  /usr/share/dist-system-metadata/timesanitycheck/minimum_unixtime r,
   /lib/*-linux-gnu/** mr,
 
   /etc/passwd r,
