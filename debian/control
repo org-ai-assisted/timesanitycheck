@@ -14,7 +14,7 @@ Rules-Requires-Root: no
 
 Package: timesanitycheck
 Architecture: all
-Depends: dist-system-metadata, ${misc:Depends}
+Depends: dist-system-metadata (>= 3:1.0-1), ${misc:Depends}
 Description: Checks if the system clock is sane between build timestamp and expiration date
  Reports, if clock is sane and not slower than build timestamp or faster than
  expiration date (configurable, default currently set to 17 MAY 2033 10:00:00).
