@@ -12,10 +12,7 @@ shopt -s shift_verbose
 export LC_ALL=C
 export TZ=UTC
 
-## Write today's date (00:00:00 UTC) as unixtime to the output file given as $1.
-## The value lives in the dist-system-metadata package (so it migrates on its own
-## cadence); dm-timesanitycheck-update passes that package's checkout path.
-output_file="${1:?date-minimum-file-create: output file path required (dist-system-metadata minimum_unixtime)}"
+output_file="${1:?date-minimum-file-create: output file path required}"
 
 date_today_human_readable_short="$(date --utc "+%m/%d/%Y")"
 ## Example date_now_human_readable:
