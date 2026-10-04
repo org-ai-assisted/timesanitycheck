@@ -9,6 +9,7 @@ set -o pipefail
 set -o errtrace
 shopt -s inherit_errexit
 shopt -s shift_verbose
+export LC_ALL=C
 
 time_sanity_check() {
    ## with:
@@ -26,12 +27,11 @@ time_sanity_check() {
    ## Convert seconds since the epoch (1970-01-01 UTC) (unixtime) to a date
    ## date --utc --date="@1999936800"
 
-   MINIMUM_UNIXTIME="$(cat -- "/usr/share/timesanitycheck/minimum_unixtime")"
+   MINIMUM_UNIXTIME="$(cat -- "/usr/share/dist-system-metadata/timesanitycheck/minimum_unixtime")"
    MINIMUM_HUMAN_READABLE_TIME="$(date --utc --date "@${MINIMUM_UNIXTIME}")"
 
    ## time after boot
    BOOT_UNIXTIME="$(date --utc "+%s")"
-   BOOT_HUMAN_READABLE_TIME="$(date --utc)"
 
    ## expiration date
    ## EXPIRATION_UNIXTIME variable gets sourced from /etc/default/$NAME

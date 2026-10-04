@@ -5,36 +5,36 @@
 
 set -o errexit
 set -o nounset
-set -o errtrace
 set -o pipefail
-
-MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$MYDIR"
-
-export LC_TIME=C
+set -o errtrace
+shopt -s inherit_errexit
+shopt -s shift_verbose
+export LC_ALL=C
 export TZ=UTC
+
+output_file="${1:?date-minimum-file-create: output file path required}"
 
 date_today_human_readable_short="$(date --utc "+%m/%d/%Y")"
 ## Example date_now_human_readable:
 ## 01/16/2021
-date_today_unixtime="$(date --utc --date "$date_today_human_readable_short 00:00:00" +"%s")"
+date_today_unixtime="$(date --utc --date "${date_today_human_readable_short} 00:00:00" +"%s")"
 
 ## date --utc --date '01/16/2021 00:00:00' +"%s"
 ## Example date_now_unixtime:
 ## 1610755200
 
-date_now_human_readable_verification="$(date --utc --date "@$date_today_unixtime" "+%m/%d/%Y %H:%M")"
+date_now_human_readable_verification="$(date --utc --date "@${date_today_unixtime}" "+%m/%d/%Y %H:%M")"
 ## date --utc --date "@1610755200" "+%m/%d/%Y %H:%M"
 ## Example date_now_human_readable_verification:
 ## Sat 16 Jan 2021 12:00:00 AM UTC
 
 current_unixtime="$(date --utc "+%s")"
 
-if [ "$current_unixtime" -ge "$date_today_unixtime" ]; then
+if [ "${current_unixtime}" -ge "${date_today_unixtime}" ]; then
    true "OK"
 else
    exit 1
 fi
 
-echo "$date_now_human_readable_verification"
-echo "$date_today_unixtime" | tee ./minimum_unixtime >/dev/null
+printf '%s\n' "${date_now_human_readable_verification}"
+printf '%s\n' "${date_today_unixtime}" | tee -- "${output_file}" >/dev/null
